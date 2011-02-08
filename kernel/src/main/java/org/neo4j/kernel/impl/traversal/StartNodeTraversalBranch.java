@@ -24,12 +24,14 @@ import org.neo4j.graphdb.RelationshipExpander;
 import org.neo4j.graphdb.traversal.TraversalBranch;
 import org.neo4j.kernel.impl.traversal.TraverserImpl.TraverserIterator;
 
+import java.util.HashMap;
+
 class StartNodeTraversalBranch extends TraversalBranchImpl
 {
-    StartNodeTraversalBranch( TraverserIterator traverser, Node source,
-            RelationshipExpander expander )
+    StartNodeTraversalBranch( TraverserIterator traverser, Node source )
     {
-        super( traverser, source, expander );
+        super( traverser, null, 0, source, null, new HashMap<Object, Object>() );
+        evaluatePosition();
     }
 
     @Override

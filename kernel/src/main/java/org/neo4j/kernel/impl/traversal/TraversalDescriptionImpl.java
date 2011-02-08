@@ -38,6 +38,8 @@ import org.neo4j.kernel.StandardExpander;
 import org.neo4j.kernel.Traversal;
 import org.neo4j.kernel.Uniqueness;
 
+import java.util.Map;
+
 public final class TraversalDescriptionImpl implements TraversalDescription
 {
     public TraversalDescriptionImpl()
@@ -228,7 +230,7 @@ public final class TraversalDescriptionImpl implements TraversalDescription
             this.pruning = pruning;
         }
 
-        public Evaluation evaluate( Path path )
+        public Evaluation evaluate( Path path, Map<Object, Object> state )
         {
             // Before the Evaluator, when PruneEvaluator was used individually a PruneEvaluator
             // was never called with the start node as argument. This condition mimics that behaviour.
@@ -249,7 +251,7 @@ public final class TraversalDescriptionImpl implements TraversalDescription
             this.filter = filter;
         }
 
-        public Evaluation evaluate( Path path )
+        public Evaluation evaluate( Path path, Map<Object, Object> state )
         {
             return filter.accept( path ) ? Evaluation.INCLUDE_AND_CONTINUE : Evaluation.EXCLUDE_AND_CONTINUE;
         }

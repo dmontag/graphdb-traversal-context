@@ -22,6 +22,8 @@ package org.neo4j.graphdb.traversal;
 import org.neo4j.graphdb.Path;
 import org.neo4j.helpers.Predicate;
 
+import java.util.Map;
+
 /**
  * An Evaluator controls what's to be returned from a traversal and also how
  * pruning is done. It looks at a {@link Path} and decides whether or not it
@@ -49,10 +51,12 @@ public interface Evaluator
      * pruned so that the traverser won't continue down that branch represented
      * by {@code path}.
      * 
-     * @param path the {@link Path} to evaluate.
+     *
+     * @param path the {@link org.neo4j.graphdb.Path} to evaluate.
+     * @param state
      * @return an {@link Evaluation} containing information about whether or not
      * to return it from the {@link Traverser} and whether or not to continue
      * down that path.
      */
-    Evaluation evaluate( Path path );
+    Evaluation evaluate( Path path, Map<Object, Object> state );
 }

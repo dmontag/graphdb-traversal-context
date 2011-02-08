@@ -104,8 +104,7 @@ class TraverserImpl implements Traverser
             this.uniquness = description.uniqueness.create( description.uniquenessParameter );
             this.startNode = TraverserImpl.this.startNode;
             this.sourceSelector = description.branchSelector.create(
-                    new StartNodeTraversalBranch( this, startNode,
-                            description.expander ) );
+                    new StartNodeTraversalBranch( this, startNode ) );
         }
 
         boolean okToProceedFirst( TraversalBranch source )

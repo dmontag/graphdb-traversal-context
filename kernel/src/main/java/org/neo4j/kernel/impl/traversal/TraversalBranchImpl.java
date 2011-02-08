@@ -20,17 +20,18 @@
 package org.neo4j.kernel.impl.traversal;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipExpander;
 import org.neo4j.graphdb.traversal.Evaluation;
 import org.neo4j.graphdb.traversal.TraversalBranch;
 import org.neo4j.kernel.impl.traversal.TraverserImpl.TraverserIterator;
 
-class TraversalBranchImpl implements TraversalBranch//, Path
+class TraversalBranchImpl implements TraversalBranch
 {
     private final TraversalBranch parent;
     private final Node source;
@@ -38,41 +39,20 @@ class TraversalBranchImpl implements TraversalBranch//, Path
     private final Relationship howIGotHere;
     private final int depth;
     final TraverserIterator traverser;
+    private Map<Object, Object> state;
     private Path path;
     private int expandedCount;
     private Evaluation evaluation;
 
-    /*
-     * For expansion sources for all nodes except the start node
-     */
     TraversalBranchImpl( TraverserIterator traverser, TraversalBranch parent, int depth,
-            Node source, RelationshipExpander expander, Relationship toHere )
+                         Node source, Relationship toHere, Map<Object, Object> state )
     {
         this.traverser = traverser;
         this.parent = parent;
         this.source = source;
         this.howIGotHere = toHere;
         this.depth = depth;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "TraversalBranch[source=" + source + ",howIGotHere=" + howIGotHere + ",depth=" + depth + "]";
-    }
-
-    /*
-     * For the start node expansion source
-     */
-    TraversalBranchImpl( TraverserIterator traverser, Node source,
-            RelationshipExpander expander )
-    {
-        this.traverser = traverser;
-        this.parent = null;
-        this.source = source;
-        this.howIGotHere = null;
-        this.depth = 0;
-        this.evaluation = traverser.description.evaluator.evaluate( position() );
+        this.state = state;
     }
 
     protected void expandRelationships( boolean doChecks )
@@ -90,8 +70,13 @@ class TraversalBranchImpl implements TraversalBranch//, Path
 
     public void initialize()
     {
-        evaluation = traverser.description.evaluator.evaluate( position() );
+        evaluatePosition();
         expandRelationships( true );
+    }
+
+    protected void evaluatePosition()
+    {
+        evaluation = traverser.description.evaluator.evaluate( position(), state );
     }
 
     public TraversalBranch next()
@@ -105,8 +90,7 @@ class TraversalBranchImpl implements TraversalBranch//, Path
             }
             expandedCount++;
             Node node = relationship.getOtherNode( source );
-            TraversalBranch next = new TraversalBranchImpl( traverser, this, depth + 1, node,
-                    traverser.description.expander, relationship );
+            TraversalBranch next = new TraversalBranchImpl( traverser, this, depth + 1, node, relationship, new HashMap<Object, Object>( state ) );
             if ( traverser.okToProceed( next ) )
             {
                 next.initialize();
@@ -160,38 +144,9 @@ class TraversalBranchImpl implements TraversalBranch//, Path
         return evaluation;
     }
 
-//    public Node startNode()
-//    {
-//        return ensurePathInstantiated().startNode();
-//    }
-//
-//    public Node endNode()
-//    {
-//        return source;
-//    }
-//
-//    public Relationship lastRelationship()
-//    {
-//        return howIGotHere;
-//    }
-//
-//    public Iterable<Relationship> relationships()
-//    {
-//        return ensurePathInstantiated().relationships();
-//    }
-//
-//    public Iterable<Node> nodes()
-//    {
-//        return ensurePathInstantiated().nodes();
-//    }
-//
-//    public int length()
-//    {
-//        return depth;
-//    }
-//
-//    public Iterator<PropertyContainer> iterator()
-//    {
-//        return ensurePathInstantiated().iterator();
-//    }
+    @Override
+    public String toString()
+    {
+        return "TraversalBranch[source=" + source + ",howIGotHere=" + howIGotHere + ",depth=" + depth + "]";
+    }
 }

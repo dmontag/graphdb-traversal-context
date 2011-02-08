@@ -23,6 +23,9 @@ import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.traversal.Evaluation;
 import org.neo4j.graphdb.traversal.Evaluator;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MultiEvaluator implements Evaluator
 {
     private final Evaluator[] evaluators;
@@ -32,13 +35,13 @@ public class MultiEvaluator implements Evaluator
         this.evaluators = prunings;
     }
 
-    public Evaluation evaluate( Path position )
+    public Evaluation evaluate( Path position, Map<Object, Object> state )
     {
         boolean includes = true;
         boolean continues = true;
         for ( Evaluator evaluator : this.evaluators )
         {
-            Evaluation bla = evaluator.evaluate( position );
+            Evaluation bla = evaluator.evaluate( position, state );
             if ( !bla.includes() )
             {
                 includes = false;

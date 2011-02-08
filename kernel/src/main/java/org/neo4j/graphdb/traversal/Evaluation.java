@@ -20,7 +20,7 @@
 package org.neo4j.graphdb.traversal;
 
 /**
- * Result of {@link Evaluator#evaluate(org.neo4j.graphdb.Path)}.
+ * Result of {@link Evaluator#evaluate(org.neo4j.graphdb.Path, java.util.Map}.
  * 
  * @author Mattias Persson
  * @see Evaluator

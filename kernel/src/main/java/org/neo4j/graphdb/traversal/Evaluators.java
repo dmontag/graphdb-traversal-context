@@ -21,6 +21,8 @@ package org.neo4j.graphdb.traversal;
 
 import org.neo4j.graphdb.Path;
 
+import java.util.Map;
+
 /**
  * Common {@link Evaluator}s useful during common traversals.
  * 
@@ -32,7 +34,7 @@ public abstract class Evaluators
 {
     private static final Evaluator ALL = new Evaluator()
     {
-        public Evaluation evaluate( Path path )
+        public Evaluation evaluate( Path path, Map<Object, Object> state )
         {
             return Evaluation.INCLUDE_AND_CONTINUE;
         }
@@ -40,7 +42,7 @@ public abstract class Evaluators
     
     private static final Evaluator ALL_BUT_START_POSITION = new Evaluator()
     {
-        public Evaluation evaluate( Path path )
+        public Evaluation evaluate( Path path, Map<Object, Object> state )
         {
             return path.length() == 0 ? Evaluation.EXCLUDE_AND_CONTINUE : Evaluation.INCLUDE_AND_CONTINUE;
         }
@@ -76,7 +78,7 @@ public abstract class Evaluators
     {
         return new Evaluator()
         {
-            public Evaluation evaluate( Path path )
+            public Evaluation evaluate( Path path, Map<Object, Object> state )
             {
                 return path.length() < depth ? Evaluation.INCLUDE_AND_CONTINUE : Evaluation.INCLUDE_AND_PRUNE;
             }
@@ -95,7 +97,7 @@ public abstract class Evaluators
     {
         return new Evaluator()
         {
-            public Evaluation evaluate( Path path )
+            public Evaluation evaluate( Path path, Map<Object, Object> state )
             {
                 return path.length() < depth ? Evaluation.EXCLUDE_AND_CONTINUE : Evaluation.INCLUDE_AND_CONTINUE;
             }
@@ -114,7 +116,7 @@ public abstract class Evaluators
     {
         return new Evaluator()
         {
-            public Evaluation evaluate( Path path )
+            public Evaluation evaluate( Path path, Map<Object, Object> state )
             {
                 return path.length() < depth ? Evaluation.EXCLUDE_AND_CONTINUE : Evaluation.INCLUDE_AND_PRUNE;
             }
@@ -136,7 +138,7 @@ public abstract class Evaluators
     {
         return new Evaluator()
         {
-            public Evaluation evaluate( Path path )
+            public Evaluation evaluate( Path path, Map<Object, Object> state )
             {
                 int length = path.length();
                 return Evaluation.of( length >= minDepth && length <= maxDepth, length < maxDepth );

@@ -32,6 +32,8 @@ import org.neo4j.helpers.Predicate;
 import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.kernel.Traversal;
 
+import java.util.Map;
+
 public class TestMultipleFilters extends AbstractTestBase
 {
     @BeforeClass
@@ -69,7 +71,7 @@ public class TestMultipleFilters extends AbstractTestBase
             return false;
         }
 
-        public Evaluation evaluate( Path path )
+        public Evaluation evaluate( Path path, Map<Object, Object> state )
         {
             return accept( path ) ? Evaluation.INCLUDE_AND_CONTINUE : Evaluation.EXCLUDE_AND_CONTINUE;
         }
@@ -81,7 +83,7 @@ public class TestMultipleFilters extends AbstractTestBase
         Evaluator mustBeConnectedToK = new MustBeConnectedToNodeFilter( getNodeWithName( "k" ) );
         Evaluator mustNotHaveMoreThanTwoOutRels = new Evaluator()
         {
-            public Evaluation evaluate( Path path )
+            public Evaluation evaluate( Path path, Map<Object, Object> state )
             {
                 return Evaluation.ofIncludes( IteratorUtil.count( path.endNode().getRelationships( Direction.OUTGOING ) ) <= 2 );
             }

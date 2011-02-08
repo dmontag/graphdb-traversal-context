@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.BeforeClass;
@@ -77,7 +78,7 @@ public class TestMultiPruneEvaluators extends AbstractTestBase
     {
         Evaluator lessThanThreeRels = new Evaluator()
         {
-            public Evaluation evaluate( Path path )
+            public Evaluation evaluate( Path path, Map<Object, Object> state )
             {
                 return IteratorUtil.count( path.endNode().getRelationships( Direction.OUTGOING ).iterator() ) < 3 ?
                         Evaluation.INCLUDE_AND_PRUNE : Evaluation.INCLUDE_AND_CONTINUE;
